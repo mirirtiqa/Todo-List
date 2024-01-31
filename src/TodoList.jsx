@@ -7,7 +7,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import CommentIcon from '@mui/icons-material/Comment';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import TodoItem from './TodoItem';
 import Form from './Form';
 
@@ -21,8 +21,16 @@ const inTodos = [
 
 export default function TodoList(){
 
+    function getInitialData(){
+       const data = JSON.parse(localStorage.getItem("todos"));
+       if (!data) return [];
+       return data;
+    }
+    const [todoList, setTodoList] = useState(getInitialData);
 
-    const [todoList, setTodoList] = useState(inTodos);
+    useEffect(()=>{
+        localStorage.setItem("todos",JSON.stringify(todoList));
+    },[todoList]);
 
    function toggleTodo(ind){
         setTodoList((prevTodos) =>{
@@ -67,8 +75,9 @@ export default function TodoList(){
          toggle ={()=> toggleTodo(todo.id)}
          />
       ))}
+      <Form addNew={addNew}/>
     </List>
-    <Form addNew={addNew}/>
+    
       </>
     );
 }
